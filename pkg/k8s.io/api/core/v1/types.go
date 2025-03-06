@@ -1310,8 +1310,9 @@ type Handler struct {
 }
 
 // Lifecycle describes actions that the management system should take in response to container lifecycle
-// events. For the PostStart and PreStop lifecycle handlers, management of the container blocks
-// until the action is complete, unless the container process fails, in which case the handler is aborted.
+// events and allowing specification of the signal used for killing a container using StopSignal. For the PostStart and
+// PreStop lifecycle handlers, management of the container blocks until the action is complete, unless
+// the container process fails, in which case the handler is aborted.
 type Lifecycle struct {
 	// PostStart is called immediately after a container is created. If the handler fails,
 	// the container is terminated and restarted according to its restart policy.
@@ -1330,7 +1331,13 @@ type Lifecycle struct {
 	// or until the termination grace period is reached.
 	// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 	// +optional
-	PreStop *Handler `json:"preStop,omitempty"`
+	PreStop *Handler
+	// StopSignal is used for specifying the  signal that will be used for
+	// stopping the container. Defaults to SIGTERM. The container should stop
+	// any operations on recieving this signal after which the SIGKILL signal
+	// is sent to the container for killing it.
+	// More info: https://github.com/kubernetes/enhancements/issues/4960
+	StopSignal uint
 }
 
 type ConditionStatus string
