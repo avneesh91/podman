@@ -1050,6 +1050,10 @@ func containerToV1Container(ctx context.Context, c *Container, getService bool) 
 		}
 	}
 
+	kubeContainer.Lifecycle = &v1.Lifecycle{
+		StopSignal: c.StopSignal(),
+	}
+
 	// Obtain the DNS entries from the container
 	dns := v1.PodDNSConfig{}
 
